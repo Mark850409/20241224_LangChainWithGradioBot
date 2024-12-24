@@ -12,7 +12,7 @@
   - [4. 操作步驟](#4-操作步驟)
     - [方法一：python本地執行LangChain主程式](#方法一python本地執行langchain主程式)
       - [STEP1：請先將我的專案整包下載下來](#step1請先將我的專案整包下載下來)
-      - [STEP2：修改env檔](#step2修改env檔)
+      - [STEP2：建立並修改env檔](#step2建立並修改env檔)
       - [STEP3：安裝python套件](#step3安裝python套件)
       - [STEP4：執行python主程式](#step4執行python主程式)
     - [方法二：docker部署LangChain主程式](#方法二docker部署langchain主程式)
@@ -42,7 +42,20 @@ git clone https://github.com/Mark850409/20241224_LangChainWithGradioBot.git
 https://github.com/Mark850409/20241224_LangChainWithGradioBot.git
 ```
 
-#### STEP2：修改env檔
+#### STEP2：建立並修改env檔
+
+請自行在專案下建立`.env`，按照以下範例進行調整
+
+請先在地端建立語言模型，若沒有請以下擇一下載
+
+LMstudio
+
+https://lmstudio.ai/
+
+Ollama
+
+https://ollama.com/
+
 
  > [!note] 
  > 1. EMBEDDINGS_MODEL_NAME→可以使用HuggingFace、Ollama、LMstudio的模型，請自行更改模型名稱
