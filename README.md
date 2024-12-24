@@ -36,7 +36,7 @@ git指令
 git clone https://github.com/Mark850409/20241224_LangChainWithGradioBot.git
 ```
 
-沒有git，這邊下載
+沒有git，進入此連結，點擊code → DownloadZIP
 
 ```
 https://github.com/Mark850409/20241224_LangChainWithGradioBot.git
@@ -45,11 +45,16 @@ https://github.com/Mark850409/20241224_LangChainWithGradioBot.git
 #### STEP2：修改env檔
 
  > [!note] 
- > 1.EMBEDDINGS_MODEL_NAME→可以使用HuggingFace、Ollama、LMstudio的模型，請自行更改模型名稱
- > 2.LLM_MODEL_NAME →可以使用HuggingFace、Ollama、LMStudio的模型，請自行更改模型名稱
- > 3.API_KEY → 不重要，隨便填
- > 4.BASE_URL→ 
+ > 1. EMBEDDINGS_MODEL_NAME→可以使用HuggingFace、Ollama、LMstudio的模型，請自行更改模型名稱
+ > 
+ > 2. LLM_MODEL_NAME →可以使用HuggingFace、Ollama、LMStudio的模型，請自行更改模型名稱
+ >
+ > 3. API_KEY → 不重要，隨便填
+ >
+ > 4. BASE_URL→
+ > 
  > ★ LMstudio：http://localhost:1234/v1/
+ >
  > ★ Ollama：http://localhost:11434/v1/
 
 範例：
@@ -89,6 +94,7 @@ docker-compose up -d
 
  > [!note] 
  > /upload → 上傳檔案
+ > 
  > /query → 使用者提問
 
 #### STEP2：執行api`建立Server`
