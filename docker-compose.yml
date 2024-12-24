@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  lanchainrag-gradio:
+    build: .
+    ports:
+      - "7862:7861"
+    volumes:
+      - .:/app

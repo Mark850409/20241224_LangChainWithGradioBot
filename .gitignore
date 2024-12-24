@@ -1,0 +1,4 @@
+.gradio
+.env
+lanchainRAG_env
+lanchainRAG_env/*

@@ -1,0 +1,10 @@
+langchain-openai
+langchain-community 
+faiss-cpu
+langchain
+langchain-huggingface
+gradio
+pypdf
+pdfplumber
+flask
+python-dotenv
