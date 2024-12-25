@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from app import initialize_vector_store, create_chain, process_files, prompt, llm,output_parser  # 從 app.py 匯入相關模組
+from langChainRAG.UploadFileRAG import initialize_vector_store, create_chain, process_files, prompt, llm,output_parser  # 從 app.py 匯入相關模組
 app = Flask(__name__)
 
 # 定義 API 路由

@@ -15,3 +15,6 @@ pypdf
 pdfplumber
 torchvision
 timm
+pandas
+markdownify
+tabulate

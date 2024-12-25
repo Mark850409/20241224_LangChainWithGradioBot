@@ -178,61 +178,101 @@ https://ollama.com/
  > PORT → API PORT
 範例：
 ```
-# 模型設置相關，根據自己的實際情況進行調整
-# API_TYPE="openai"
-# API_TYPE="huggingface"
-API_TYPE="lmstudio"
-# API_TYPE="ollama" 
+#######################################
+# LangChain使用
+#######################################
+EMBEDDINGS_MODEL_NAME="intfloat/multilingual-e5-small"
+LLM_MODEL_NAME="phi3_chinese_main"
+API_KEY="lm-studio"
+BASE_URL="http://localhost:1234/v1/"
+TEMPERATURE="0.5"
+VECTOR_DB_NAME="faiss_1224_db"
 
+#######################################
+# 模型相關配置說明
+#######################################
 # openai: 調用GPT模型；
 # huggingface: 調用huggingface方案支持的模型
 # lmstudio: 調用lmstudio方案支持的模型
 # ollama: 調用ollama方案支持的模型
 
-# openai模型相關配置，根據自己的實際情況進行調整
+#######################################
+# 模型類型
+#######################################
+# API_TYPE="openai"
+# API_TYPE="huggingface"
+API_TYPE="lmstudio"
+# API_TYPE="ollama" 
+
+#######################################
+# OPENAI模型配置
+#######################################
 # OPENAI_API_BASE="https://api.wlai.vip/v1"
 # OPENAI_EMBEDDING_API_KEY=""
 # OPENAI_EMBEDDING_MODEL="text-embedding-3-small"
 
-# OLLAMA模型相關配置，根據自己的實際情況進行調整
+#######################################
+# OLLAMA模型配置
+#######################################
 # OPENAI_API_BASE="http://localhost:11434/v1"
 # OPENAI_EMBEDDING_API_KEY="ollama"
 # OPENAI_CHAT_API_KEY='ollama'
 # OPENAI_CHAT_MODEL='llama-3.2-3b-instruct'
 # OPENAI_EMBEDDING_MODEL="nomic-embed-text:latest"
 
-# lmstudio模型相關配置，根據自己的實際情況進行調整
+#######################################
+# LMSTUDIO模型配置
+#######################################
 OPENAI_API_BASE="http://localhost:1234/v1/"
 OPENAI_CHAT_API_KEY='lm-studio'
-OPENAI_CHAT_MODEL='llama-3.2-3b-instruct'
+OPENAI_CHAT_MODEL='phi3_chinese_main'
 OPENAI_EMBEDDING_API_KEY="lm-studio"
 OPENAI_EMBEDDING_MODEL="text-embedding-nomic-embed-text-v1.5"
 
-# HUGGINGFACE模型相關配置，根據自己的實際情況進行調整
+#######################################
+# HUGGINGFACE模型配置
+#######################################
 HUGGINGFACE_CHAT_MODEL="gpt2"
 HUGGINGFACE_EMBEDDING_MODEL="sentence-transformers/msmarco-distilbert-base-v3"
 
+#######################################
+# 其餘參數配置
+#######################################
 # 設置測試文本類型
 TEXT_LANGUAGE='Chinese'
 #TEXT_LANGUAGE='English'
 
 # 測試的PDF文件路徑
-INPUT_PDF="input/健康档案(含表格02).pdf"
+INPUT_PDF="input/CloudSQL.pdf"
 
 # 指定文件中待處理的頁碼，全部頁碼則填None
 PAGE_NUMBERS=None
 # PAGE_NUMBERS=[2, 3]
 
+#######################################
+# 向量數據庫配置
+#######################################
 # 指定向量數據庫chromaDB的存儲位置和集合，根據自己的實際情況進行調整
 CHROMADB_DIRECTORY="chromaDB"
-CHROMADB_COLLECTION_NAME="demo006"
+CHROMADB_COLLECTION_NAME="demo008"
 
-
+#######################################
+# 提示詞模板配置
+#######################################
 # prompt模版設置相關，根據自己的實際情況進行調整
-PROMPT_TEMPLATE_TXT="prompt_template.txt"
+PROMPT_PDF_TEMPLATE_TXT="prompt_template.txt"
+PROMPT_UPLOAD_TEMPLATE_TXT="UploadFileRAG_template.txt"
 
+#######################################
+# API配置
+#######################################
 # API設置相關，根據自己的實際情況進行調整
 PORT=8012
+
+#######################################
+# LangFlow配置
+#######################################
+LANGFLOW_BASE_URL="https://5591-163-14-137-66.ngrok-free.app/"
 ```
 
 ### STEP2：安裝python套件

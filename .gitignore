@@ -2,3 +2,6 @@
 .env
 lanchainRAG_env
 lanchainRAG_env/*
+input
+input/*
+chromaDB

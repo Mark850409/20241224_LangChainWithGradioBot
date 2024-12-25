@@ -6,22 +6,39 @@ from langchain_core.prompts import ChatPromptTemplate                       # pi
 from langchain_core.runnables import RunnableParallel, RunnablePassthrough  # pip install langchain
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain.document_loaders import PyPDFLoader, CSVLoader, TextLoader
-from langchain.schema import Document                                    # Ensure the document structure
+from langchain.schema import Document  
+from langchain_core.prompts import PromptTemplate                            
 import pdfplumber                                                            # pip install pdfplumber
 import os
 from dotenv import load_dotenv  # pip install python-dotenv
+import logging
 
 # 載入 .env 檔案
 load_dotenv()
 
-# 從環境變數中獲取設定
+# 設置日誌模版
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+# 模型設置相關，根據自己的實際情況進行調整
 EMBEDDINGS_MODEL_NAME = os.getenv("EMBEDDINGS_MODEL_NAME")
+logger.info(f"EMBEDDINGS_MODEL_NAME: {EMBEDDINGS_MODEL_NAME}")
 LLM_MODEL_NAME = os.getenv("LLM_MODEL_NAME")
+logger.info(f"LLM_MODEL_NAME: {LLM_MODEL_NAME}")
 API_KEY = os.getenv("API_KEY")
+logger.info(f"API_KEY: {API_KEY}")
 BASE_URL = os.getenv("BASE_URL")
+logger.info(f"BASE_URL: {BASE_URL}")
 TEMPERATURE = float(os.getenv("TEMPERATURE"))
+logger.info(f"TEMPERATURE: {TEMPERATURE}")
+
+# 指定向量數據庫chromaDB的存儲檔名，根據自己的實際情況進行調整
 VECTOR_DB_NAME = os.getenv("VECTOR_DB_NAME")
-PROMPT_TEMPLATE = os.getenv("PROMPT_TEMPLATE")
+logger.info(f"VECTOR_DB_NAME: {VECTOR_DB_NAME}")
+
+# prompt模版設置相關，根據自己的實際情況進行調整
+PROMPT_UPLOAD_TEMPLATE_TXT = "../promt/"+os.getenv("PROMPT_UPLOAD_TEMPLATE_TXT") 
+logger.info(f"PROMPT_UPLOAD_TEMPLATE_TXT: {PROMPT_UPLOAD_TEMPLATE_TXT}")
 
 # 使用 HuggingFaceEmbeddings 模型 
 embeddings = HuggingFaceEmbeddings(model_name=EMBEDDINGS_MODEL_NAME)
@@ -45,10 +62,10 @@ def get_retriever(store, mode="mmr"):
 def initialize_vector_store(search_mode="mmr"):
     """初始化向量資料庫和檢索器"""
     global vector_store, retriever, current_search_mode
-    if os.path.exists("faiss_1214_db"):
+    if os.path.exists(VECTOR_DB_NAME):
         try:
             vector_store = FAISS.load_local(
-                "faiss_1214_db", 
+                VECTOR_DB_NAME, 
                 embeddings=embeddings,
                 allow_dangerous_deserialization=True
             )
@@ -116,7 +133,7 @@ def process_files(file_objs, search_mode):
     try:
         global vector_store, retriever, current_search_mode
         vector_store = FAISS.from_documents(documents, embeddings)
-        vector_store.save_local("faiss_1214_db")
+        vector_store.save_local(VECTOR_DB_NAME)
         current_search_mode = search_mode
         retriever = get_retriever(vector_store, search_mode)
     except Exception as e:
@@ -140,51 +157,14 @@ llm = ChatOpenAI(model=LLM_MODEL_NAME,
                  base_url=BASE_URL,
                  temperature=TEMPERATURE)
 
-# 聊天模板
-prompt = ChatPromptTemplate.from_messages([
-    ("system", '''
-你是一個專業的 RAG（檢索增強生成）系統助手，負責提供準確且有來源依據的回答。你需要使用繁體中文，並保持專業、客觀的語氣。
-
-基於檢索到的文件內容，請：
-1. 請用簡單扼要的方式回答
-2. 使用條列式方式組織回答
-3. 請不要使用MarkDown語法輸出，請使用純文字輸出
-
-限制條件
-• 僅使用繁體中文回答
-• 若無法在文件中找到相關資訊，需明確說明
-• 回答須符合向量搜索模式（MMR 或 Cosine）的特性
-     
-品質要求
-• 確保回答的準確性和完整性
-• 保持邏輯清晰的條列式呈現
-'''),
-    ("human", "Answer the question based only on the following context: \n{context}\n\nQuestion: {question}"),]
-)
+# 讀取提示詞模板
+with open(PROMPT_UPLOAD_TEMPLATE_TXT, 'r', encoding='utf-8') as f:
+    template_content = f.read()
+prompt_template = PromptTemplate(input_variables=["query", "context"], template=template_content)
+prompt = ChatPromptTemplate.from_messages([("human", str(prompt_template.template))])
 
 # 純文字解析器
 output_parser = StrOutputParser()
-
-
-################################
-
-# 指令介面測試
-
-################################
-
-# 這邊使用 RunnableParallel 並行執行兩個任務
-# setup_and_retrieval = RunnableParallel(
-#     {"context": retriever, "question": RunnablePassthrough()}
-# )
-
-# 串連各個組件
-# chain = setup_and_retrieval | prompt | llm | output_parser
-
-# 測試
-# output = chain.invoke("唐僧師徒三人遇到那些妖怪?")
-
-# print(output)
-
 
 ################################
 
