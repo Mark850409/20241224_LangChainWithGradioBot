@@ -6,13 +6,17 @@ from langchain_core.prompts import ChatPromptTemplate                       # pi
 from langchain_core.runnables import RunnableParallel, RunnablePassthrough  # pip install langchain
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain.document_loaders import PyPDFLoader, CSVLoader, TextLoader
+from langchain.document_loaders import  UnstructuredWordDocumentLoader # 支援 DOCX 文件的加載
+from langchain.document_loaders import UnstructuredExcelLoader  # 支援 XLSX 文件的加載
 from langchain.schema import Document  
 from langchain_core.prompts import PromptTemplate                            
 import pdfplumber                                                            # pip install pdfplumber
 import os
 from dotenv import load_dotenv  # pip install python-dotenv
 import logging
-
+import nltk
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
 # 載入 .env 檔案
 load_dotenv()
 
@@ -37,7 +41,7 @@ VECTOR_DB_NAME = os.getenv("VECTOR_DB_NAME")
 logger.info(f"VECTOR_DB_NAME: {VECTOR_DB_NAME}")
 
 # prompt模版設置相關，根據自己的實際情況進行調整
-PROMPT_UPLOAD_TEMPLATE_TXT = "../promt/"+os.getenv("PROMPT_UPLOAD_TEMPLATE_TXT") 
+PROMPT_UPLOAD_TEMPLATE_TXT = "promt/"+os.getenv("PROMPT_UPLOAD_TEMPLATE_TXT") 
 logger.info(f"PROMPT_UPLOAD_TEMPLATE_TXT: {PROMPT_UPLOAD_TEMPLATE_TXT}")
 
 # 使用 HuggingFaceEmbeddings 模型 
@@ -125,6 +129,21 @@ def process_files(file_objs, search_mode):
                 docs = loader.load()
                 for doc in docs:
                     documents.append(Document(page_content=doc.page_content, metadata=doc.metadata))
+            elif temp_path.lower().endswith(".docx"):
+                loader = TextLoader(temp_path)
+                docs = loader.load()
+                for doc in docs:
+                    documents.append(Document(page_content=doc.page_content, metadata=doc.metadata))
+            elif temp_path.lower().endswith(".xlsx"):
+                loader = TextLoader(temp_path)
+                docs = loader.load()
+                for doc in docs:
+                    documents.append(Document(page_content=doc.page_content, metadata=doc.metadata))
+            elif temp_path.lower().endswith(".md"):
+                loader = TextLoader(temp_path, encoding='utf-8')
+                docs = loader.load()
+                for doc in docs:
+                    documents.append(Document(page_content=doc.page_content, metadata=doc.metadata))
             else:
                 return f"不支援的檔案格式: {temp_path}"
         except Exception as e:
@@ -148,7 +167,7 @@ def create_chain():
         if not initialize_vector_store():
             raise ValueError("向量資料庫尚未初始化，請先上傳文件。")
     return RunnableParallel(
-        {"context": retriever, "question": RunnablePassthrough()}
+        {"query": RunnablePassthrough(),"context": retriever}
     )
 
 # 初始化 OpenAI 模型
@@ -208,8 +227,8 @@ with gr.Blocks() as interface:
                 info="MMR: 最大邊際相關算法 | Cosine: 文本相似度算法"
             )
             upload_section = gr.File(
-                label="上傳文件 (支援 PDF、CSV、TXT)", 
-                file_types=[".pdf", ".csv", ".txt"], 
+                label="上傳文件 (支援 PDF、CSV、TXT、DOCX、XLSX、MD)", 
+                file_types=[".pdf", ".csv", ".txt", ".docx", ".xlsx", ".md"], 
                 file_count="multiple"
             )
             upload_status = gr.Textbox(label="處理狀態", interactive=False)

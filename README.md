@@ -199,35 +199,37 @@ VECTOR_DB_NAME="faiss_1224_db"
 #######################################
 # 模型類型
 #######################################
-# API_TYPE="openai"
+API_TYPE="openai"
 # API_TYPE="huggingface"
-API_TYPE="lmstudio"
+# API_TYPE="lmstudio"
 # API_TYPE="ollama" 
 
 #######################################
 # OPENAI模型配置
 #######################################
-# OPENAI_API_BASE="https://api.wlai.vip/v1"
-# OPENAI_EMBEDDING_API_KEY=""
-# OPENAI_EMBEDDING_MODEL="text-embedding-3-small"
+OPENAI_API_BASE="https://api.openai.com/v1"
+OPENAI_CHAT_API_KEY=""
+OPENAI_CHAT_MODEL='gpt-4o-mini'
+OPENAI_EMBEDDING_API_KEY=""
+OPENAI_EMBEDDING_MODEL="text-embedding-3-small"
 
 #######################################
 # OLLAMA模型配置
 #######################################
-# OPENAI_API_BASE="http://localhost:11434/v1"
-# OPENAI_EMBEDDING_API_KEY="ollama"
-# OPENAI_CHAT_API_KEY='ollama'
-# OPENAI_CHAT_MODEL='llama-3.2-3b-instruct'
-# OPENAI_EMBEDDING_MODEL="nomic-embed-text:latest"
+# OLLAMA_API_BASE="http://localhost:11434/v1"
+# OLLAMA_EMBEDDING_API_KEY="ollama"
+# OLLAMA_CHAT_API_KEY='ollama'
+# OLLAMA_CHAT_MODEL='llama-3.2-3b-instruct'
+# OLLAMA_EMBEDDING_MODEL="nomic-embed-text:latest"
 
 #######################################
 # LMSTUDIO模型配置
 #######################################
-OPENAI_API_BASE="http://localhost:1234/v1/"
-OPENAI_CHAT_API_KEY='lm-studio'
-OPENAI_CHAT_MODEL='phi3_chinese_main'
-OPENAI_EMBEDDING_API_KEY="lm-studio"
-OPENAI_EMBEDDING_MODEL="text-embedding-nomic-embed-text-v1.5"
+# LMSTUDIO_API_BASE="http://localhost:1234/v1/"
+# LMSTUDIO_CHAT_API_KEY='lm-studio'
+# LMSTUDIO_CHAT_MODEL='chatglm3-6b'
+# LMSTUDIO_EMBEDDING_API_KEY="lm-studio"
+# LMSTUDIO_EMBEDDING_MODEL="text-embedding-nomic-embed-text-v1.5"
 
 #######################################
 # HUGGINGFACE模型配置
@@ -243,7 +245,7 @@ TEXT_LANGUAGE='Chinese'
 #TEXT_LANGUAGE='English'
 
 # 測試的PDF文件路徑
-INPUT_PDF="input/CloudSQL.pdf"
+INPUT_PDF="CloudSQL.pdf"
 
 # 指定文件中待處理的頁碼，全部頁碼則填None
 PAGE_NUMBERS=None
@@ -254,7 +256,7 @@ PAGE_NUMBERS=None
 #######################################
 # 指定向量數據庫chromaDB的存儲位置和集合，根據自己的實際情況進行調整
 CHROMADB_DIRECTORY="chromaDB"
-CHROMADB_COLLECTION_NAME="demo008"
+CHROMADB_COLLECTION_NAME="CloudSQL"
 
 #######################################
 # 提示詞模板配置

@@ -29,6 +29,7 @@ logger.info(f"API_TYPE: {API_TYPE}")
 
 # OpenAI模型相關配置，根據自己的實際情況進行調整
 OPENAI_API_BASE = os.getenv("OPENAI_API_BASE")
+OPENAI_CHAT_API_KEY=os.getenv("OPENAI_CHAT_API_KEY")
 OPENAI_EMBEDDING_API_KEY = os.getenv("OPENAI_EMBEDDING_API_KEY")
 OPENAI_EMBEDDING_MODEL = os.getenv("OPENAI_EMBEDDING_MODEL")
 logger.info(f"OPENAI_API_BASE: {OPENAI_API_BASE}")
@@ -45,7 +46,7 @@ TEXT_LANGUAGE = os.getenv("TEXT_LANGUAGE")
 logger.info(f"TEXT_LANGUAGE: {TEXT_LANGUAGE}")
 
 # 測試的PDF文件路徑
-INPUT_PDF = os.getenv("INPUT_PDF")
+INPUT_PDF = "../input/"+os.getenv("INPUT_PDF")
 logger.info(f"INPUT_PDF: {INPUT_PDF}")
 
 # 指定文件中待處理的頁碼，全部頁碼則填None
@@ -111,7 +112,7 @@ def get_embeddings(texts):
             # 初始化ollama的Embedding模型
             client = OpenAI(
                 base_url=OPENAI_API_BASE,
-                api_key=OPENAI_EMBEDDING_API_KEY
+                api_key=OPENAI_CHAT_API_KEY
             )
             data = client.embeddings.create(input=texts, model=OPENAI_EMBEDDING_MODEL).data
             return [x.embedding for x in data]
@@ -185,7 +186,7 @@ def vectorStoreSave():
         )
         vector_db = MyVectorDBConnector(CHROMADB_COLLECTION_NAME, generate_vectors)
         vector_db.add_documents(paragraphs)
-        user_query = "WiFi機型有哪些?"
+        user_query = "Cloud SQL的⽤途是什麼?"
         search_results = vector_db.search(user_query, 5)
         logger.info(f"檢索向量數據庫的結果: {search_results}")
 

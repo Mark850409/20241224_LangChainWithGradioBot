@@ -61,7 +61,7 @@ logger.info(f"CHROMADB_DIRECTORY: {CHROMADB_DIRECTORY}")
 logger.info(f"CHROMADB_COLLECTION_NAME: {CHROMADB_COLLECTION_NAME}")
 
 # prompt模版設置相關，根據自己的實際情況進行調整
-PROMPT_PDF_TEMPLATE_TXT = "../promt/"+os.getenv("PROMPT_PDF_TEMPLATE_TXT") 
+PROMPT_PDF_TEMPLATE_TXT = "promt/"+os.getenv("PROMPT_PDF_TEMPLATE_TXT") 
 logger.info(f"PROMPT_PDF_TEMPLATE_TXT: {PROMPT_PDF_TEMPLATE_TXT}")
 
 # 模型設置相關，根據自己的實際情況進行調整
@@ -80,8 +80,32 @@ logger.info(f"OPENAI_EMBEDDING_API_KEY: {OPENAI_EMBEDDING_API_KEY}")
 OPENAI_EMBEDDING_MODEL = os.getenv("OPENAI_EMBEDDING_MODEL") 
 logger.info(f"OPENAI_EMBEDDING_MODEL: {OPENAI_EMBEDDING_MODEL}")
 
+# LMSTUDIO模型相關配置，根據自己的實際情況進行調整
+LMSTUDIO_API_BASE = os.getenv("LMSTUDIO_API_BASE") 
+logger.info(f"LMSTUDIO_API_BASE: {LMSTUDIO_API_BASE}")
+LMSTUDIO_CHAT_API_KEY = os.getenv("LMSTUDIO_CHAT_API_KEY") 
+logger.info(f"LMSTUDIO_CHAT_API_KEY: {LMSTUDIO_CHAT_API_KEY}")
+LMSTUDIO_CHAT_MODEL = os.getenv("LMSTUDIO_CHAT_MODEL") 
+logger.info(f"LMSTUDIO_CHAT_MODEL: {LMSTUDIO_CHAT_MODEL}")
+LMSTUDIO_EMBEDDING_API_KEY = os.getenv("LMSTUDIO_EMBEDDING_API_KEY") 
+logger.info(f"LMSTUDIO_EMBEDDING_API_KEY: {LMSTUDIO_EMBEDDING_API_KEY}")
+LMSTUDIO_EMBEDDING_MODEL = os.getenv("LMSTUDIO_EMBEDDING_MODEL") 
+logger.info(f"LMSTUDIO_EMBEDDING_MODEL: {LMSTUDIO_EMBEDDING_MODEL}")
+
+# OLLAMA模型相關配置，根據自己的實際情況進行調整
+OLLAMA_API_BASE = os.getenv("OLLAMA_API_BASE") 
+logger.info(f"OLLAMA_API_BASE: {OLLAMA_API_BASE}")
+OLLAMA_CHAT_API_KEY = os.getenv("OLLAMA_CHAT_API_KEY") 
+logger.info(f"OLLAMA_CHAT_API_KEY: {OLLAMA_CHAT_API_KEY}")
+OLLAMA_CHAT_MODEL = os.getenv("OLLAMA_CHAT_MODEL") 
+logger.info(f"OLLAMA_CHAT_MODEL: {OLLAMA_CHAT_MODEL}")
+OLLAMA_EMBEDDING_API_KEY = os.getenv("OLLAMA_EMBEDDING_API_KEY") 
+logger.info(f"OLLAMA_EMBEDDING_API_KEY: {OLLAMA_EMBEDDING_API_KEY}")
+OLLAMA_EMBEDDING_MODEL = os.getenv("OLLAMA_EMBEDDING_MODEL") 
+logger.info(f"OLLAMA_EMBEDDING_MODEL: {OLLAMA_EMBEDDING_MODEL}")
+
 # HUGGINGFACE模型相關配置，根據自己的實際情況進行調整
-# HUGGINGFACE_CHAT_MODEL=os.getenv("HUGGINGFACE_CHAT_MODEL") 
+HUGGINGFACE_CHAT_MODEL=os.getenv("HUGGINGFACE_CHAT_MODEL") 
 HUGGINGFACE_EMBEDDING_MODEL= os.getenv("HUGGINGFACE_EMBEDDING_MODEL") 
 
 # API服務設置相關，根據自己的實際情況進行調整
@@ -155,23 +179,24 @@ async def lifespan(app: FastAPI):
     try:
         # 初始化模型判斷
         logger.info("正在初始化模型、Chroma對象、提取prompt模版、定義chain...")
+        # HUGGINGFACE的維度只支援384、768、1024，如果不是這兩種維度，請用opeai的EMBEDDING
         if API_TYPE == "lmstudio":
             model = ChatOpenAI(
-                base_url=OPENAI_API_BASE,
-                api_key=OPENAI_CHAT_API_KEY,
-                model=OPENAI_CHAT_MODEL
+                base_url=LMSTUDIO_API_BASE,
+                api_key=LMSTUDIO_CHAT_API_KEY,
+                model=LMSTUDIO_CHAT_MODEL
             )
-            embeddings = HuggingFaceEmbeddings(model_name=HUGGINGFACE_EMBEDDING_MODEL)
-            # embeddings = OpenAIEmbeddings(
-            #     base_url=OPENAI_API_BASE,
-            #     api_key=OPENAI_EMBEDDING_API_KEY,
-            #     model=OPENAI_EMBEDDING_MODEL,
-            #     )
+            #embeddings = HuggingFaceEmbeddings(model_name=HUGGINGFACE_EMBEDDING_MODEL)
+            embeddings = OpenAIEmbeddings(
+                base_url=OPENAI_API_BASE,
+                api_key=OPENAI_EMBEDDING_API_KEY,
+                model=OPENAI_EMBEDDING_MODEL,
+                )
         elif API_TYPE == "ollama":
             model = ChatOpenAI(
-                base_url=OPENAI_API_BASE,
-                api_key=OPENAI_CHAT_API_KEY,
-                model=OPENAI_CHAT_MODEL
+                base_url=OLLAMA_API_BASE,
+                api_key=OLLAMA_CHAT_API_KEY,
+                model=OLLAMA_CHAT_MODEL
             )
             embeddings = HuggingFaceEmbeddings(model_name=HUGGINGFACE_EMBEDDING_MODEL)
             # embeddings = OpenAIEmbeddings(
@@ -182,7 +207,7 @@ async def lifespan(app: FastAPI):
         elif API_TYPE == "huggingface":
             hf_pipeline = pipeline(
                 "text-generation",
-                model="gpt2",
+                model=HUGGINGFACE_CHAT_MODEL,
                 device=-1,
                 max_length=4096,  # 增加 max_length
                 max_new_tokens=256  # 限制新生成的 tokens 長度
@@ -200,12 +225,12 @@ async def lifespan(app: FastAPI):
                 api_key=OPENAI_CHAT_API_KEY,
                 model=OPENAI_CHAT_MODEL
             )
-            embeddings = HuggingFaceEmbeddings(model_name=HUGGINGFACE_EMBEDDING_MODEL)
-            # embeddings = OpenAIEmbeddings(
-            #     base_url=OPENAI_API_BASE,
-            #     api_key=OPENAI_EMBEDDING_API_KEY,
-            #     model=OPENAI_EMBEDDING_MODEL,
-            #     )
+            #embeddings = HuggingFaceEmbeddings(model_name=HUGGINGFACE_EMBEDDING_MODEL)
+            embeddings = OpenAIEmbeddings(
+                base_url=OPENAI_API_BASE,
+                api_key=OPENAI_EMBEDDING_API_KEY,
+                model=OPENAI_EMBEDDING_MODEL,
+            )
         # 讀取向量資料庫
         vectorstore = Chroma(persist_directory=CHROMADB_DIRECTORY,
                              collection_name=CHROMADB_COLLECTION_NAME,
